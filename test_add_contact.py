@@ -3,6 +3,8 @@ from selenium import webdriver
 from selenium.common.exceptions import NoAlertPresentException
 import unittest
 
+from contact import Contact
+
 
 def is_alert_present(self):
     try:
@@ -19,29 +21,44 @@ class TestAddContact(unittest.TestCase):
 
     def test_add_contact_without_group(self):
         wd = self.wd
-        # open home page
-        wd.get("https://localhost/addressbook/group.php")
-        # login
-        wd.find_element_by_name("user").click()
-        wd.find_element_by_name("user").clear()
-        wd.find_element_by_name("user").send_keys("admin")
-        wd.find_element_by_name("pass").click()
-        wd.find_element_by_name("pass").clear()
-        wd.find_element_by_name("pass").send_keys("secret")
-        wd.find_element_by_xpath("//input[@value='Login']").click()
-        # init new contact creation from home page
-        wd.find_element_by_link_text("add new").click()
-        # add a contact without group from home page
+        self.open_home_page(wd)
+        self.login(wd, username="admin", password="secret")
+        self.init_contact_creation_home_page(wd)
+        self.add_contact_without_group(wd, Contact(contact_first_name="First name", contact_last_name="Last name"))
+        self.return_to_home_page_from_confirmation(wd)
+        self.logout(wd)
+
+    def return_to_home_page_from_confirmation(self, wd):
+        wd.find_element_by_link_text("home page").click()
+
+    def add_contact_without_group(self, wd, contact):
+        # add a contact without group (none value) from home page
         wd.find_element_by_name("firstname").click()
         wd.find_element_by_name("firstname").clear()
-        wd.find_element_by_name("firstname").send_keys("First name")
+        wd.find_element_by_name("firstname").send_keys(contact.contact_first_name)
         wd.find_element_by_name("lastname").click()
         wd.find_element_by_name("lastname").clear()
-        wd.find_element_by_name("lastname").send_keys("Last name")
+        wd.find_element_by_name("lastname").send_keys(contact.contact_last_name)
         wd.find_element_by_xpath("//option[@value='[none]']").click()
         wd.find_element_by_xpath("//div[@id='content']/form/input[21]").click()
-        # return to home page from confirmation screen
-        wd.find_element_by_link_text("home page").click()
+
+    def init_contact_creation_home_page(self, wd):
+        wd.find_element_by_link_text("add new").click()
+
+    def login(self, wd, username, password):
+        wd.find_element_by_name("user").click()
+        wd.find_element_by_name("user").clear()
+        wd.find_element_by_name("user").send_keys(username)
+        wd.find_element_by_name("pass").click()
+        wd.find_element_by_name("pass").clear()
+        wd.find_element_by_name("pass").send_keys(password)
+        wd.find_element_by_xpath("//input[@value='Login']").click()
+
+    def logout(self, wd):
+        wd.find_element_by_link_text("Logout").click()
+
+    def open_home_page(self, wd):
+        wd.get("https://localhost/addressbook/group.php")
 
     def tearDown(self):
         self.wd.quit()

@@ -1,6 +1,7 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 
+from fixture.group import GroupHelper
 from fixture.session import SessionHelper
 
 
@@ -10,6 +11,7 @@ class Application:
         self.wd = webdriver.Firefox()
         self.wd.implicitly_wait(30)
         self.session = SessionHelper(self)
+        self.group = GroupHelper(self)
 
     # general helper methods
 
@@ -26,34 +28,6 @@ class Application:
 
     def destroy(self):
         self.wd.quit()
-
-    # group tests helper methods
-    def return_to_groups_page(self):
-        wd = self.wd
-        wd.find_element_by_link_text("group page").click()
-
-    def create_group(self, group):
-        wd = self.wd
-        self.open_groups_page()
-        # init group creation
-        wd.find_element_by_name("new").click()
-        # fill in group form
-        wd.find_element_by_name("group_name").click()
-        wd.find_element_by_name("group_name").clear()
-        wd.find_element_by_name("group_name").send_keys(group.group_name)
-        wd.find_element_by_name("group_header").click()
-        wd.find_element_by_name("group_header").clear()
-        wd.find_element_by_name("group_header").send_keys(group.group_header)
-        wd.find_element_by_name("group_footer").click()
-        wd.find_element_by_name("group_footer").clear()
-        wd.find_element_by_name("group_footer").send_keys(group.group_footer)
-        # submit group creation
-        wd.find_element_by_name("submit").click()
-        self.return_to_groups_page()
-
-    def open_groups_page(self):
-        wd = self.wd
-        wd.find_element_by_link_text("groups").click()
 
     # contact tests helper methods
     def return_to_home_page_from_confirmation(self, wd):

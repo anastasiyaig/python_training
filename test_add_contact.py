@@ -20,15 +20,16 @@ class TestAddContact(unittest.TestCase):
         self.wd.implicitly_wait(30)
 
     def test_add_contact_without_group(self):
-        wd = self.wd
-        self.login(wd, username="admin", password="secret")
-        self.add_contact_without_group(wd, Contact(contact_first_name="First name", contact_last_name="Last name"))
-        self.logout(wd)
+        self.login(username="admin", password="secret")
+        self.add_contact_without_group(Contact(contact_first_name="First name", contact_last_name="Last name"))
+        self.logout()
 
     def return_to_home_page_from_confirmation(self, wd):
+        wd = self.wd
         wd.find_element_by_link_text("home page").click()
 
-    def add_contact_without_group(self, wd, contact):
+    def add_contact_without_group(self, contact):
+        wd = self.wd
         self.init_contact_creation_home_page(wd)
         # add a contact without group (none value) from home page
         wd.find_element_by_name("firstname").click()
@@ -42,10 +43,12 @@ class TestAddContact(unittest.TestCase):
         self.return_to_home_page_from_confirmation(wd)
 
     def init_contact_creation_home_page(self, wd):
+        wd = self.wd
         wd.find_element_by_link_text("add new").click()
 
-    def login(self, wd, username, password):
-        self.open_home_page(wd)
+    def login(self, username, password):
+        wd = self.wd
+        self.open_home_page()
         wd.find_element_by_name("user").click()
         wd.find_element_by_name("user").clear()
         wd.find_element_by_name("user").send_keys(username)
@@ -54,10 +57,12 @@ class TestAddContact(unittest.TestCase):
         wd.find_element_by_name("pass").send_keys(password)
         wd.find_element_by_xpath("//input[@value='Login']").click()
 
-    def logout(self, wd):
+    def logout(self):
+        wd = self.wd
         wd.find_element_by_link_text("Logout").click()
 
-    def open_home_page(self, wd):
+    def open_home_page(self):
+        wd = self.wd
         wd.get("https://localhost/addressbook/group.php")
 
     def tearDown(self):

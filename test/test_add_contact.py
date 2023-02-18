@@ -12,6 +12,6 @@ def app(request):
 
 
 def test_add_contact_without_group(app):
-    app.login(username="admin", password="secret")
+    app.session.login(username="admin", password="secret")
     app.add_contact_without_group(Contact(contact_first_name="First name", contact_last_name="Last name"))
-    app.logout()
+    app.session.logout()

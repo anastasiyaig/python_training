@@ -21,17 +21,15 @@ class TestAddContact(unittest.TestCase):
 
     def test_add_contact_without_group(self):
         wd = self.wd
-        self.open_home_page(wd)
         self.login(wd, username="admin", password="secret")
-        self.init_contact_creation_home_page(wd)
         self.add_contact_without_group(wd, Contact(contact_first_name="First name", contact_last_name="Last name"))
-        self.return_to_home_page_from_confirmation(wd)
         self.logout(wd)
 
     def return_to_home_page_from_confirmation(self, wd):
         wd.find_element_by_link_text("home page").click()
 
     def add_contact_without_group(self, wd, contact):
+        self.init_contact_creation_home_page(wd)
         # add a contact without group (none value) from home page
         wd.find_element_by_name("firstname").click()
         wd.find_element_by_name("firstname").clear()
@@ -41,11 +39,13 @@ class TestAddContact(unittest.TestCase):
         wd.find_element_by_name("lastname").send_keys(contact.contact_last_name)
         wd.find_element_by_xpath("//option[@value='[none]']").click()
         wd.find_element_by_xpath("//div[@id='content']/form/input[21]").click()
+        self.return_to_home_page_from_confirmation(wd)
 
     def init_contact_creation_home_page(self, wd):
         wd.find_element_by_link_text("add new").click()
 
     def login(self, wd, username, password):
+        self.open_home_page(wd)
         wd.find_element_by_name("user").click()
         wd.find_element_by_name("user").clear()
         wd.find_element_by_name("user").send_keys(username)

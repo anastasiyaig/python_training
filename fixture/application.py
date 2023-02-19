@@ -1,5 +1,9 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
+import time
+
+from selenium.webdriver.support.wait import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
 from fixture.contact import ContactHelper
 from fixture.group import GroupHelper
@@ -18,6 +22,12 @@ class Application:
     def open_home_page(self):
         wd = self.wd
         wd.get("https://localhost/addressbook/index.php")
+
+    def alert_is_present(self, timeout=3):
+        wd = self.wd
+        WebDriverWait(wd, timeout).until(EC.alert_is_present())
+        alert = wd.switch_to.alert
+        alert.accept()
 
     def destroy(self):
         self.wd.quit()

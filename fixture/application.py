@@ -26,8 +26,7 @@ class Application:
     def alert_is_present(self, timeout=3):
         wd = self.wd
         WebDriverWait(wd, timeout).until(EC.alert_is_present())
-        alert = wd.switch_to.alert
-        alert.accept()
+        wd.switch_to.alert.accept()
 
     def destroy(self):
         self.wd.quit()

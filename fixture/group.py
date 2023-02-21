@@ -19,6 +19,13 @@ class GroupHelper:
         # init group creation
         wd.find_element_by_name("new").click()
         # fill in group form
+        self.fill_in_group_form(group)
+        # submit group creation
+        wd.find_element_by_name("submit").click()
+        self.return_to_groups_page_from_confirmation()
+
+    def fill_in_group_form(self, group):
+        wd = self.app.wd
         wd.find_element_by_name("group_name").click()
         wd.find_element_by_name("group_name").clear()
         wd.find_element_by_name("group_name").send_keys(group.group_name)
@@ -28,9 +35,6 @@ class GroupHelper:
         wd.find_element_by_name("group_footer").click()
         wd.find_element_by_name("group_footer").clear()
         wd.find_element_by_name("group_footer").send_keys(group.group_footer)
-        # submit group creation
-        wd.find_element_by_name("submit").click()
-        self.return_to_groups_page_from_confirmation()
 
     def delete_first_group(self):
         wd = self.app.wd
@@ -49,15 +53,7 @@ class GroupHelper:
         # initiate group modification
         wd.find_element_by_xpath("//input[@value='Edit group']").click()
         # fill in group form
-        wd.find_element_by_name("group_name").click()
-        wd.find_element_by_name("group_name").clear()
-        wd.find_element_by_name("group_name").send_keys(group.group_name)
-        wd.find_element_by_name("group_header").click()
-        wd.find_element_by_name("group_header").clear()
-        wd.find_element_by_name("group_header").send_keys(group.group_header)
-        wd.find_element_by_name("group_footer").click()
-        wd.find_element_by_name("group_footer").clear()
-        wd.find_element_by_name("group_footer").send_keys(group.group_footer)
+        self.fill_in_group_form(group)
         # submit the form for changed group (click Update)
         wd.find_element_by_name("update").click()
         self.return_to_groups_page_from_confirmation()

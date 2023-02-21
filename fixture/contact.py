@@ -11,6 +11,11 @@ class ContactHelper:
         wd = self.app.wd
         wd.find_element_by_link_text("add new").click()
 
+    def open_home_page_in_header(self):
+        wd = self.app.wd
+        wd.find_element(By.CSS_SELECTOR, "a[href='./']").click()
+        # wd.find_element_by_link_text("home").click()
+
     def return_to_home_page_from_confirmation(self):
         wd = self.app.wd
         wd.find_element_by_link_text("home page").click()
@@ -35,6 +40,7 @@ class ContactHelper:
 
     def delete_first_contact(self):
         wd = self.app.wd
+        self.open_home_page_in_header()
         wd.find_element_by_name("selected[]").click()
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         # TODO: there is an alert in Firefox only, we need to skip next step in Chrome / Edge
@@ -42,6 +48,7 @@ class ContactHelper:
 
     def edit_first_contact(self, contact):
         wd = self.app.wd
+        self.open_home_page_in_header()
         # TODO: might be helpful in future when specifying exact contact to edit
         # wd.find_element_by_name("selected[]").click()
         # click pencil icon for random contact actually, because this icon is the same for all contacts

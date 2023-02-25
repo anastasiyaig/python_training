@@ -30,13 +30,15 @@ class ContactHelper:
         self.return_to_home_page_from_confirmation()
 
     def fill_in_contact_form_without_group(self, contact):
+        self.change_field_value("firstname", contact.contact_first_name)
+        self.change_field_value("lastname", contact.contact_last_name)
+
+    def change_field_value(self, field_name, text):
         wd = self.app.wd
-        wd.find_element_by_name("firstname").click()
-        wd.find_element_by_name("firstname").clear()
-        wd.find_element_by_name("firstname").send_keys(contact.contact_first_name)
-        wd.find_element_by_name("lastname").click()
-        wd.find_element_by_name("lastname").clear()
-        wd.find_element_by_name("lastname").send_keys(contact.contact_last_name)
+        if text is not None:
+            wd.find_element_by_name(field_name).click()
+            wd.find_element_by_name(field_name).clear()
+            wd.find_element_by_name(field_name).send_keys(text)
 
     def submit_contact_form_creation(self):
         wd = self.app.wd
@@ -56,7 +58,6 @@ class ContactHelper:
         # TODO: might be helpful in future when specifying exact contact to edit
         # wd.find_element_by_name("selected[]").click()
         wd.find_element_by_xpath("//img[@alt='Edit']").click()
-        # fill in contact form for modification (no group field)
         self.fill_in_contact_form_without_group(contact)
         # submit contact form modification (click Update)
         wd.find_element_by_xpath("//input[@value='Update']").click()

@@ -13,8 +13,8 @@ class ContactHelper:
 
     def open_home_page_in_header(self):
         wd = self.app.wd
-        wd.find_element(By.CSS_SELECTOR, "a[href='./']").click()
-        # wd.find_element_by_link_text("home").click()
+        if not (wd.current_url.endswith("/index.php") and len(wd.find_elements_by_xpath("//input[@value='Send e-Mail']")) > 0):
+            wd.find_element(By.CSS_SELECTOR, "a[href='./']").click()
 
     def return_to_home_page_from_confirmation(self):
         wd = self.app.wd

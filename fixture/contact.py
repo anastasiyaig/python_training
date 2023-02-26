@@ -62,3 +62,8 @@ class ContactHelper:
         # submit contact form modification (click Update)
         wd.find_element_by_xpath("//input[@value='Update']").click()
         self.return_to_home_page_from_confirmation()
+
+    def count(self):
+        wd = self.app.wd
+        self.open_home_page_in_header()
+        return len(wd.find_elements_by_name("selected[]"))

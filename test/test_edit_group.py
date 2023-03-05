@@ -10,7 +10,7 @@ def test_edit_group_name(app):
     group_to_edit.group_id = groups_list_before[0].group_id
     app.group.edit_first_group(group_to_edit)
     groups_list_after = app.group.get_group_list()
-    assert len(groups_list_before) == len(groups_list_after)
+    assert len(groups_list_before) == app.group.count()
     groups_list_before[0] = group_to_edit
     assert sorted(groups_list_before, key=Group.id_or_max) == sorted(groups_list_after, key=Group.id_or_max)
 
@@ -24,7 +24,7 @@ def test_edit_group_header(app):
     group_to_edit.group_id = groups_list_before[0].group_id
     app.group.edit_first_group(group_to_edit)
     groups_list_after = app.group.get_group_list()
-    assert len(groups_list_before) == len(groups_list_after)
+    assert len(groups_list_before) == app.group.count()
     groups_list_before[0] = group_to_edit
     assert sorted(groups_list_before, key=Group.id_or_max) == sorted(groups_list_after, key=Group.id_or_max)
 
@@ -38,6 +38,6 @@ def test_edit_group_footer(app):
     group_to_edit.group_id = groups_list_before[0].group_id
     app.group.edit_first_group(group_to_edit)
     groups_list_after = app.group.get_group_list()
-    assert len(groups_list_before) == len(groups_list_after)
+    assert len(groups_list_before) == app.group.count()
     groups_list_before[0] = group_to_edit
     assert sorted(groups_list_before, key=Group.id_or_max) == sorted(groups_list_after, key=Group.id_or_max)

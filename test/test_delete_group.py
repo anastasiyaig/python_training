@@ -8,3 +8,5 @@ def test_delete_first_group(app):
     app.group.delete_first_group()
     groups_list_after = app.group.get_group_list()
     assert len(groups_list_before) - 1 == len(groups_list_after)
+    groups_list_before[0:1] = []
+    assert groups_list_before == groups_list_after

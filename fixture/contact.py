@@ -14,7 +14,8 @@ class ContactHelper:
 
     def open_home_page_in_header(self):
         wd = self.app.wd
-        if not (wd.current_url.endswith("/index.php") and len(wd.find_elements_by_xpath("//input[@value='Send e-Mail']")) > 0):
+        if not (wd.current_url.endswith("/index.php") and len(
+                wd.find_elements_by_xpath("//input[@value='Send e-Mail']")) > 0):
             wd.find_element(By.CSS_SELECTOR, "a[href='./']").click()
 
     def return_to_home_page_from_confirmation(self):
@@ -47,26 +48,35 @@ class ContactHelper:
         wd.find_element_by_xpath("//input[@value='Enter']").click()
 
     def delete_first_contact(self):
+        self.delete_contact_by_index(0)
+
+    def delete_contact_by_index(self, index):
         wd = self.app.wd
         self.open_home_page_in_header()
-        wd.find_element_by_name("selected[]").click()
+        self.select_contact_by_index(index)
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         # TODO: there is an alert in Firefox only, we need to skip next step in Chrome / Edge
         self.app.alert_is_present()
         WebDriverWait(wd, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.msgbox")))
         self.contact_cache = None
 
-    def edit_first_contact(self, contact):
+    def select_contact_by_index(self, index):
+        wd = self.app.wd
+        wd.find_elements_by_name("selected[]")[index].click()
+
+    def edit_contact_by_index(self, index, contact):
         wd = self.app.wd
         self.open_home_page_in_header()
-        # TODO: might be helpful in future when specifying exact contact to edit
-        # wd.find_element_by_name("selected[]").click()
-        wd.find_element_by_xpath("//img[@alt='Edit']").click()
+        self.select_contact_by_index(index)
+        wd.find_elements_by_xpath("//img[@alt='Edit']")[index].click()
         self.fill_in_contact_form_without_group(contact)
         # submit contact form modification (click Update)
         wd.find_element_by_xpath("//input[@value='Update']").click()
         self.return_to_home_page_from_confirmation()
         self.contact_cache = None
+
+    def edit_first_contact(self, contact):
+        self.edit_contact_by_index(0)
 
     def count(self):
         wd = self.app.wd
@@ -74,6 +84,7 @@ class ContactHelper:
         return len(wd.find_elements_by_name("selected[]"))
 
     contact_cache = None
+
     def get_contacts_list(self):
         if self.contact_cache is None:
             wd = self.app.wd
@@ -93,9 +104,6 @@ class ContactHelper:
                 # grabbing necessary text attributes from needed cells
                 first_name = cells[2].text
                 last_name = cells[1].text
-                self.contact_cache.append(Contact(contact_first_name=first_name, contact_last_name=last_name, contact_id=id))
+                self.contact_cache.append(
+                    Contact(contact_first_name=first_name, contact_last_name=last_name, contact_id=id))
         return list(self.contact_cache)
-
-
-
-

@@ -1,6 +1,7 @@
 from selenium.webdriver.common.by import By
-
-from model import contact
+from selenium.webdriver.support.wait import WebDriverWait
+from model.contact import Contact
+from selenium.webdriver.support import expected_conditions as EC
 
 
 class ContactHelper:
@@ -51,6 +52,7 @@ class ContactHelper:
         wd.find_element_by_xpath("//input[@value='Delete']").click()
         # TODO: there is an alert in Firefox only, we need to skip next step in Chrome / Edge
         self.app.alert_is_present()
+        WebDriverWait(wd, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, "div.msgbox")))
 
     def edit_first_contact(self, contact):
         wd = self.app.wd
@@ -67,3 +69,28 @@ class ContactHelper:
         wd = self.app.wd
         self.open_home_page_in_header()
         return len(wd.find_elements_by_name("selected[]"))
+
+    def get_contacts_list(self):
+        wd = self.app.wd
+        self.open_home_page_in_header()
+        contacts_list = []
+        # find all elements with tr tag and build a list of these elements (table lines from the table)
+        contacts_table_rows = wd.find_elements_by_xpath(".//*[@id='maintable']/tbody/tr")
+        # remove header line (first row)
+        contacts_table_rows.remove(contacts_table_rows[0])
+
+        for row in contacts_table_rows:
+            # for each line (or a table row, or element in the contact_table_row list) I search for a single cell
+            # build a list of cells that belong to 1 row, recognising them by tag
+            cells = row.find_elements(By.TAG_NAME, "td")
+            # in a row, check for unique input tag for a checkbox and get its id
+            id = row.find_element(By.TAG_NAME, "input").get_attribute("value")
+            # grabbing necessary text attributes from needed cells
+            first_name = cells[2].text
+            last_name = cells[1].text
+            contacts_list.append(Contact(contact_first_name=first_name, contact_last_name=last_name, contact_id=id))
+        return contacts_list
+
+
+
+

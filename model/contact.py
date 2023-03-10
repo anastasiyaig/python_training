@@ -15,8 +15,8 @@ class Contact:
         self.contact_first_name = contact_first_name
         self.contact_last_name = contact_last_name
         self.contact_homephone = contact_homephone
-        self.contact_mobilephone = contact_mobilephone,
-        self.contact_workphone = contact_workphone,
+        self.contact_mobilephone = contact_mobilephone
+        self.contact_workphone = contact_workphone
         self.contact_secondaryphone = contact_secondaryphone
         self.all_phones_from_home_page = all_phones_from_home_page
         self.contact_id = contact_id

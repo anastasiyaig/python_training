@@ -94,21 +94,29 @@ class ContactHelper:
     def get_contact_info_from_edit_page(self, index):
         self.open_contact_to_edit_by_index(index)
         wd = self.app.wd
+        contact_id = wd.find_element_by_name("id").get_attribute("value")
         contact_first_name = wd.find_element_by_name("firstname").get_attribute("value")
         contact_last_name = wd.find_element_by_name("lastname").get_attribute("value")
-        contact_id = wd.find_element_by_name("id").get_attribute("value")
+        contact_main_address = wd.find_element_by_xpath("//textarea[@name='address']").get_attribute("value")
         contact_homephone = wd.find_element_by_name("home").get_attribute("value")
-        contact_mobilephone = ''.join(wd.find_element_by_name("mobile").get_attribute("value"))
-        contact_workphone = ''.join(wd.find_element_by_name("work").get_attribute("value"))
+        contact_mobilephone = wd.find_element_by_name("mobile").get_attribute("value")
+        contact_workphone = wd.find_element_by_name("work").get_attribute("value")
         contact_secondaryphone = wd.find_element_by_name("phone2").get_attribute("value")
+        contact_first_email = wd.find_element_by_xpath("//input[@name='email']").get_attribute("value")
+        contact_second_email = wd.find_element_by_xpath("//input[@name='email2']").get_attribute("value")
+        contact_third_email = wd.find_element_by_xpath("//input[@name='email3']").get_attribute("value")
         return Contact(
-            contact_first_name = contact_first_name,
-            contact_last_name = contact_last_name,
-            contact_id = contact_id,
-            contact_homephone = contact_homephone,
-            contact_mobilephone = contact_mobilephone,
-            contact_workphone = contact_workphone,
-            contact_secondaryphone = contact_secondaryphone
+            contact_id=contact_id,
+            contact_first_name=contact_first_name,
+            contact_last_name=contact_last_name,
+            contact_main_address=contact_main_address,
+            contact_homephone=contact_homephone,
+            contact_mobilephone=contact_mobilephone,
+            contact_workphone=contact_workphone,
+            contact_secondaryphone=contact_secondaryphone,
+            contact_first_email=contact_first_email,
+            contact_second_email=contact_second_email,
+            contact_third_email=contact_third_email
         )
 
     def get_contact_from_view_page(self, index):
@@ -125,8 +133,6 @@ class ContactHelper:
             contact_workphone=contact_workphone,
             contact_secondaryphone=contact_secondaryphone
         )
-
-
 
     def edit_first_contact(self, contact):
         self.edit_contact_by_index(0)
@@ -158,10 +164,14 @@ class ContactHelper:
                 first_name = cells[2].text
                 last_name = cells[1].text
                 all_phones = cells[5].text
+                all_emails = cells[4].text
+                main_address = cells[3].text
                 self.contact_cache.append(
                     Contact(
+                        contact_id=id,
                         contact_first_name=first_name,
                         contact_last_name=last_name,
-                        contact_id=id,
-                        all_phones_from_home_page = all_phones))
+                        contact_main_address=main_address,
+                        all_emails_from_home_page=all_emails,
+                        all_phones_from_home_page=all_phones))
         return list(self.contact_cache)

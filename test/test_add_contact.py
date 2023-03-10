@@ -10,3 +10,5 @@ def test_add_contact_without_group(app):
     assert len(contacts_list_before) + 1 == app.contact.count()
     contacts_list_before.append(contact_to_add)
     assert sorted(contacts_list_before, key=Contact.id_or_max) == sorted(contacts_list_after, key=Contact.id_or_max)
+
+

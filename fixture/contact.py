@@ -75,6 +75,41 @@ class ContactHelper:
         self.return_to_home_page_from_confirmation()
         self.contact_cache = None
 
+    def open_contact_to_edit_by_index(self, index):
+        wd = self.app.wd
+        self.open_home_page_in_header()
+        row = wd.find_elements_by_name("entry")[index]
+        cell = row.find_elements_by_tag_name("td")[7]
+        cell.find_element_by_tag_name("a").click()
+
+    def open_contact_details_by_index(self, index):
+        wd = self.app.wd
+        self.open_home_page_in_header()
+        row = wd.find_elements_by_name("entry")[index]
+        cell = row.find_elements_by_tag_name("td")[6]
+        cell.find_element_by_tag_name("a").click()
+
+    def get_contact_info_from_edit_page(self, index):
+        self.open_contact_to_edit_by_index(index)
+        wd = self.app.wd
+        contact_first_name = wd.find_element(By.NAME, "firstname").get_attribute("value")
+        contact_last_name = wd.find_element(By.NAME, "lastname").get_attribute("value")
+        contact_id = wd.find_element(By.NAME, "id").get_attribute("value")
+        contact_homephone = wd.find_element(By.NAME, "home").get_attribute("value")
+        contact_mobilephone = wd.find_element(By.NAME, "mobile").get_attribute("value")
+        contact_workphone = wd.find_element(By.NAME, "work").get_attribute("value")
+        contact_secondaryphone = wd.find_element(By.NAME, "phone2").get_attribute("value")
+        return Contact(
+            contact_first_name = contact_first_name,
+            contact_last_name = contact_last_name,
+            contact_id = contact_id,
+            contact_homephone = contact_homephone,
+            contact_mobilephone = contact_mobilephone,
+            contact_workphone = contact_workphone,
+            contact_secondaryphone = contact_secondaryphone
+        )
+
+
     def edit_first_contact(self, contact):
         self.edit_contact_by_index(0)
 
@@ -104,6 +139,14 @@ class ContactHelper:
                 # grabbing necessary text attributes from needed cells
                 first_name = cells[2].text
                 last_name = cells[1].text
+                all_phones = cells[5].text.splitlines()
                 self.contact_cache.append(
-                    Contact(contact_first_name=first_name, contact_last_name=last_name, contact_id=id))
+                    Contact(
+                        contact_first_name=first_name,
+                        contact_last_name=last_name,
+                        contact_id=id,
+                        contact_homephone=all_phones[0],
+                        contact_mobilephone=all_phones[1],
+                        contact_workphone=all_phones[2],
+                        contact_secondaryphone=all_phones[3]))
         return list(self.contact_cache)

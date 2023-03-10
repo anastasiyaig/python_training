@@ -1,3 +1,5 @@
+import re
+
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from model.contact import Contact
@@ -92,13 +94,13 @@ class ContactHelper:
     def get_contact_info_from_edit_page(self, index):
         self.open_contact_to_edit_by_index(index)
         wd = self.app.wd
-        contact_first_name = wd.find_element(By.NAME, "firstname").get_attribute("value")
-        contact_last_name = wd.find_element(By.NAME, "lastname").get_attribute("value")
-        contact_id = wd.find_element(By.NAME, "id").get_attribute("value")
-        contact_homephone = wd.find_element(By.NAME, "home").get_attribute("value")
-        contact_mobilephone = wd.find_element(By.NAME, "mobile").get_attribute("value")
-        contact_workphone = wd.find_element(By.NAME, "work").get_attribute("value")
-        contact_secondaryphone = wd.find_element(By.NAME, "phone2").get_attribute("value")
+        contact_first_name = wd.find_element_by_name("firstname").get_attribute("value")
+        contact_last_name = wd.find_element_by_name("lastname").get_attribute("value")
+        contact_id = wd.find_element_by_name("id").get_attribute("value")
+        contact_homephone = wd.find_element_by_name("home").get_attribute("value")
+        contact_mobilephone = ''.join(wd.find_element_by_name("mobile").get_attribute("value"))
+        contact_workphone = ''.join(wd.find_element_by_name("work").get_attribute("value"))
+        contact_secondaryphone = wd.find_element_by_name("phone2").get_attribute("value")
         return Contact(
             contact_first_name = contact_first_name,
             contact_last_name = contact_last_name,
@@ -108,6 +110,22 @@ class ContactHelper:
             contact_workphone = contact_workphone,
             contact_secondaryphone = contact_secondaryphone
         )
+
+    def get_contact_from_view_page(self, index):
+        wd = self.app.wd
+        self.open_contact_details_by_index(index)
+        text = wd.find_element_by_id("content").text
+        contact_homephone = re.search("H: (.*)", text).group(1)
+        contact_mobilephone = re.search("M: (.*)", text).group(1)
+        contact_workphone = re.search("W: (.*)", text).group(1)
+        contact_secondaryphone = re.search("P: (.*)", text).group(1)
+        return Contact(
+            contact_homephone=contact_homephone,
+            contact_mobilephone=contact_mobilephone,
+            contact_workphone=contact_workphone,
+            contact_secondaryphone=contact_secondaryphone
+        )
+
 
 
     def edit_first_contact(self, contact):
@@ -133,20 +151,17 @@ class ContactHelper:
             for row in contacts_table_rows:
                 # for each line (or a table row, or element in the contact_table_row list) I search for a single cell
                 # build a list of cells that belong to 1 row, recognising them by tag
-                cells = row.find_elements(By.TAG_NAME, "td")
+                cells = row.find_elements_by_tag_name("td")
                 # in a row, check for unique input tag for a checkbox and get its id
                 id = row.find_element(By.TAG_NAME, "input").get_attribute("value")
                 # grabbing necessary text attributes from needed cells
                 first_name = cells[2].text
                 last_name = cells[1].text
-                all_phones = cells[5].text.splitlines()
+                all_phones = cells[5].text
                 self.contact_cache.append(
                     Contact(
                         contact_first_name=first_name,
                         contact_last_name=last_name,
                         contact_id=id,
-                        contact_homephone=all_phones[0],
-                        contact_mobilephone=all_phones[1],
-                        contact_workphone=all_phones[2],
-                        contact_secondaryphone=all_phones[3]))
+                        all_phones_from_home_page = all_phones))
         return list(self.contact_cache)

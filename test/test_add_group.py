@@ -7,7 +7,7 @@ from model.group import Group
 
 
 def random_string(prefix, maxlen):
-    symbols_to_use = string.ascii_letters + string.digits + string.punctuation + " "*10
+    symbols_to_use = string.ascii_letters + string.digits + " "*10
     return prefix + "".join([random.choice(symbols_to_use) for i in range(random.randrange(maxlen))])
 
 

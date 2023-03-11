@@ -37,6 +37,7 @@ class ContactHelper:
     def fill_in_contact_form_without_group(self, contact):
         self.change_field_value("firstname", contact.contact_first_name)
         self.change_field_value("lastname", contact.contact_last_name)
+        self.change_field_value("address", contact.contact_main_address)
 
     def change_field_value(self, field_name, text):
         wd = self.app.wd

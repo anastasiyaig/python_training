@@ -25,8 +25,12 @@ test_data = [Group(group_name="", group_header="", group_footer="")] + \
 def test_add_group(app, group):
     groups_list_before = app.group.get_group_list()
     group_to_add = group
+    group_to_add.group_name = clear_spaces(group.group_name)
     app.group.create(group_to_add)
     assert len(groups_list_before) + 1 == app.group.count()
     groups_list_after = app.group.get_group_list()
     groups_list_before.append(group_to_add)
     assert sorted(groups_list_before, key=Group.id_or_max) == sorted(groups_list_after, key=Group.id_or_max)
+
+def clear_spaces(s):
+    return " ".join(s.split()) if s is not None else None

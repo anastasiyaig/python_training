@@ -10,7 +10,6 @@ def app(request):
     global fixture
     browser = request.config.getoption("--browser")
     base_url = request.config.getoption("--baseUrl")
-    fixture = Application(browser=browser, base_url=base_url)
     if fixture is None:
         fixture = Application(browser=browser, base_url=base_url)
     else:
